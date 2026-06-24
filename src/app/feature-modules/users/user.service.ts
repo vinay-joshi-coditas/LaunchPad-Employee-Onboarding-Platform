@@ -1,9 +1,11 @@
+import { hashPassword } from "../../utilities/hash-password.js";
 import userRepo from "./user.repo.js";
 import { UserResponse } from "./user.response.js";
 import type { User } from "./user.types.js";
 
 const add = async(user: Omit<User, "id">) => {
     try {
+        user.password = await hashPassword(user.password);
         await userRepo.add(user);
         return UserResponse.USER_CREATED;
         

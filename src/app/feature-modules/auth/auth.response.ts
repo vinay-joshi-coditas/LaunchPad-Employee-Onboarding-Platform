@@ -4,31 +4,36 @@ export const authResponses: Record<
   | "USER_ALREDAY_EXISTS"
   | "INVALID_OTP"
   | "USER_CREATED"
-  | "OTP_SENT",
-  { statusCode: number; messege: string }
+  | "OTP_SENT"
+  | "USER_VERIFIED_SUCCESSFULLY",
+  { statusCode: number; message: string }
 > = {
   USER_NOT_FOUND: {
     statusCode: 404,
-    messege: "user not found",
+    message: "user not found",
   },
   INVALID_CREDENTIALS: {
     statusCode: 401,
-    messege: "invalid credentials ",
+    message: "invalid credentials ",
   },
   USER_ALREDAY_EXISTS: {
     statusCode: 400,
-    messege: "user already exists ",
+    message: "user already exists ",
   },
   INVALID_OTP: {
     statusCode: 400,
-    messege: "invalid OTP",
+    message: "invalid OTP",
   },
   USER_CREATED: {
     statusCode: 201,
-    messege: "user created successfully",
+    message: "user created successfully",
   },
   OTP_SENT: {
     statusCode: 200,
-    messege: "otp sent successfully",
+    message: "otp sent successfully",
   },
+  USER_VERIFIED_SUCCESSFULLY: {
+    statusCode: 200,
+    message: "USER VERIFIED SUCCESSFULLY"
+  }
 };

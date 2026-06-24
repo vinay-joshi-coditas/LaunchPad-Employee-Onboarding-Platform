@@ -6,10 +6,11 @@ import { ResponseHandler } from "../../utilities/response-handler.js";
 import { Route } from "../../routes/routes.types.js";
 import userService from "./user.service.js";
 import { authorize } from "../../utilities/authorize.middleware.js";
+import { rmSync } from "node:fs";
 
 const router = Router();
 
-router.post("/add", body(ZUserCreate), authorize("HR"), async(req, res, next) => {
+router.post("/add", body(ZUserCreate), async(req, res, next) => {
     try {
 
         const result = userService.add(req.body);
@@ -19,4 +20,4 @@ router.post("/add", body(ZUserCreate), authorize("HR"), async(req, res, next) =>
     }
 })
 
-export default new Route("/user", router);
+export default new Route("/user", router);rmSync
