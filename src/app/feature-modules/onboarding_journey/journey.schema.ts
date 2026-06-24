@@ -6,67 +6,57 @@ import {
   type InferAttributes,
   type InferCreationAttributes,
 } from "sequelize";
+import type { Users } from "../users/user.schema.js";
 import { sequelize } from "../../connections/pg.connection.js";
 
-export class Users extends Model<
-  InferAttributes<Users>,
-  InferCreationAttributes<Users>
+export class Journey extends Model<
+  InferAttributes<Journey>,
+  InferCreationAttributes<Journey>
 > {
   declare id: CreationOptional<string>;
-  declare name: CreationOptional<string>;
-  declare email: string;
-  declare password: CreationOptional<string>;
-  declare role: string;
-  declare manager_id: ForeignKey<Users["id"]>;
-  declare password_version: CreationOptional<number>;
-  declare isActive: CreationOptional<boolean>;
+  declare newHireId: ForeignKey<Users["id"]>;
+  declare status: string;
+  declare startDate: CreationOptional<Date>;
+  declare completedAt: CreationOptional<Date>;
+  declare progress_percentage: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare createdBy: CreationOptional<string>;
   declare updatedBy: CreationOptional<string>;
 }
 
-Users.init(
+Journey.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: () => crypto.randomUUID(),
       primaryKey: true,
-      allowNull: false
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    email: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: null
-    },
-    role: {
-      type: DataTypes.ENUM("Joinee", "HR", "Manager"),
-      allowNull: false,
-    },
-    manager_id: {
+    newHireId: {
       type: DataTypes.UUID,
-      allowNull: true,
-      references: { model: Users, key: "id" },
-      onDelete: "CASCADE",
-      onUpdate: "SET NULL",
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
     },
-    password_version: {
+    status: {
+      type: DataTypes.ENUM("Pending", "InProgress", "Completed"),
+      allowNull: true,
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: true,
+    },
+    completedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    progress_percentage: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: 0,
-    },
-    isActive: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-        defaultValue: false
     },
     createdAt: {
       allowNull: true,
@@ -81,17 +71,17 @@ Users.init(
     createdBy: {
       allowNull: true,
       type: DataTypes.UUID,
-      references: { model: Users, key: "id" },
+      references: { model: "users", key: "id" },
     },
     updatedBy: {
       allowNull: true,
       type: DataTypes.UUID,
-      references: { model: Users, key: "id" },
-    }
+      references: { model: "users", key: "id" },
+    },
   },
   {
     sequelize,
-    tableName: "users",
+    tableName: "onboarding_journey",
     timestamps: true,
   },
 );

@@ -1,6 +1,5 @@
 "use strict";
 import { DataTypes } from "sequelize";
-
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
@@ -10,46 +9,37 @@ export default {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("users", {
+    await queryInterface.createTable("onboarding_journey", {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.fn("gen_random_uuid"),
         primaryKey: true,
-        allowNull: false,  
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
-      email: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      password: {
-        type: DataTypes.STRING,
+      task_type: {
+        type: DataTypes.ENUM("Pending", "InProgress", "Completed"),
         allowNull: true,
-        defaultValue: null,
       },
-      role: {
-        type: DataTypes.ENUM("Joinee", "HR", "Manager"),
-        allowNull: false,
-      },
-      manager_id: {
-        type: DataTypes.UUID,
+      startDate: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
         allowNull: true,
-        references: { model: "users", key: "id" },
-        onDelete: "CASCADE",
-        onUpdate: "SET NULL",
       },
-      password_version: {
+      completedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      progress_percentage: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: 0,
-      },
-      isActive: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-        defaultValue: false,
       },
       createdAt: {
         allowNull: true,
@@ -81,6 +71,6 @@ export default {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable('onboarding_journey');
   },
 };

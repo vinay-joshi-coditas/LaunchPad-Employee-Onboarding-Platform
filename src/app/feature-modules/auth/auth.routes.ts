@@ -38,7 +38,7 @@ router.post("/login", body(ZUserLogin), async (req, res, next) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,      
     });
 
     res.cookie("refreshToken", result.refreshToken, {

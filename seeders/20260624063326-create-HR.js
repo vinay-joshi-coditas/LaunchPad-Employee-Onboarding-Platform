@@ -20,7 +20,7 @@ export default {
             name: "Vinay",
             email: "joshivinay085@gmail.com",
             password:
-              "$2a$12$hPFtxACKSdrbo2NLp5sH4eLMACk4ZkayvL99luZH9B1TgaBhS2USq",
+              "$2a$12$/o7YhoA15YJ5VQpK.JYCYunVRlg7snXpLOPH4WKf10FmAvSnvGUtC",
             role: "HR",
             isActive: true
           },

@@ -7,18 +7,29 @@ import type { User } from "../users/user.types.js";
 import userService from "../users/user.service.js";
 import { compare } from "bcryptjs";
 import type { UserRole } from "../../utilities/user-role.enum.js";
+import { sendEmail } from "../../services/email.service.js";
 
 const generateOtp = async (email: string) => {
   try {
-    const userexists = await userRepo.findOne(email);
-    if (!userexists) throw authResponses.USER_NOT_FOUND;
+    // const userexists = await userRepo.findOne(email);
+    // if (!userexists) throw authResponses.USER_NOT_FOUND;
     const otp = crypto.randomInt(100000, 999999).toString();
-    const redisKey = `OTP:${userexists.email}`;
+    const redisKey = `OTP:${email}`;
 
     await redis.setEx(redisKey, 600, otp);
 
     console.log(otp);
-    return authResponses.OTP_SENT;
+
+    // await sendEmail(
+    //   userexists.email,
+    //   "Welcome to our platform",
+    //   `<h1>LaunchPad will make sure you have a smooth onboarding<br>
+    //   Your OTP for login is ${otp}</h1>
+    //     <br><br>
+    //   <p>Valid for 10 minutes.</p> `,
+    // );
+    return otp;
+    // return authResponses.OTP_SENT;
   } catch (error) {
     console.log(error);
 
@@ -76,6 +87,8 @@ const login = async (credentials: Pick<User, "email" | "password">) => {
 
     
   } catch (error) {
+    console.log(error);
+    
     throw error;
   }
 };

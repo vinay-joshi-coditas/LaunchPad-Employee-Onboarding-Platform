@@ -1,9 +1,10 @@
 import z, { email } from "zod";
 
 export const ZUserCreate = z.object({
-    email: z.string().min(1),
-    
-})
+  email: z.string().min(1),
+  role: z.string().min(1),
+  manager_id: z.string().min(1),
+});
 
 export const ZUser = z.object({
   id: z.string().optional(),
@@ -14,8 +15,10 @@ export const ZUser = z.object({
   manager_id: z.string().min(1),
   password_version: z.number(),
   isActive: z.boolean(),
-  createdBy: z.string(),
-  updatedBy: z.string()
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+  createdBy: z.string().optional(),
+  updatedBy: z.string().optional(),
 });
 
 export type User = z.infer<typeof ZUser>;
