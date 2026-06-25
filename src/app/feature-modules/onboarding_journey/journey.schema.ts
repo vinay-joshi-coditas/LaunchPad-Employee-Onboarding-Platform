@@ -6,26 +6,25 @@ import {
   type InferAttributes,
   type InferCreationAttributes,
 } from "sequelize";
-import type { Users } from "../users/user.schema.js";
 import { sequelize } from "../../connections/pg.connection.js";
+import { Users } from "../users/user.schema.js";
 
-export class Journey extends Model<
-  InferAttributes<Journey>,
-  InferCreationAttributes<Journey>
+export class OnboardingJourneys extends Model<
+  InferAttributes<OnboardingJourneys>,
+  InferCreationAttributes<OnboardingJourneys>
 > {
   declare id: CreationOptional<string>;
   declare newHireId: ForeignKey<Users["id"]>;
-  declare status: string;
+  declare status: CreationOptional<string>;
   declare startDate: CreationOptional<Date>;
-  declare completedAt: CreationOptional<Date>;
-  declare progress_percentage: CreationOptional<number>;
+  declare completedAt: CreationOptional<Date | null>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare createdBy: CreationOptional<string>;
   declare updatedBy: CreationOptional<string>;
 }
 
-Journey.init(
+OnboardingJourneys.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -36,47 +35,42 @@ Journey.init(
     newHireId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: "users",
-        key: "id",
-      },
+      references: { model: Users, key: "id" },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     status: {
       type: DataTypes.ENUM("Pending", "InProgress", "Completed"),
-      allowNull: true,
+      allowNull: false,
     },
     startDate: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
       allowNull: true,
     },
     completedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-    },
-    progress_percentage: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+      defaultValue: null,
     },
     createdAt: {
-      allowNull: true,
       type: DataTypes.DATE,
+      allowNull: true,
       defaultValue: DataTypes.NOW,
     },
     updatedAt: {
-      allowNull: true,
       type: DataTypes.DATE,
+      allowNull: true,
       defaultValue: DataTypes.NOW,
     },
     createdBy: {
-      allowNull: true,
       type: DataTypes.UUID,
-      references: { model: "users", key: "id" },
+      allowNull: true,
+      references: { model: Users, key: "id" },
     },
     updatedBy: {
-      allowNull: true,
       type: DataTypes.UUID,
-      references: { model: "users", key: "id" },
+      allowNull: true,
+      references: { model: Users, key: "id" },
     },
   },
   {
@@ -85,3 +79,4 @@ Journey.init(
     timestamps: true,
   },
 );
+
