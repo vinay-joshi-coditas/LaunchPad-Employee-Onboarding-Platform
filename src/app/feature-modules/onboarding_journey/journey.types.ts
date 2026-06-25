@@ -2,6 +2,9 @@ import z from "zod";
 
 export const ZOnboardingJourneyCreate = z.object({
   newHireId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  taskType: z.string(),
   startDate: z.coerce.date().optional()
 });
 

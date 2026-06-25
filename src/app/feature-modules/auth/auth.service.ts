@@ -2,11 +2,14 @@ import crypto from "crypto";
 import { redis } from "../../connections/redis.connection.js";
 import { authResponses } from "./auth.response.js";
 import userRepo from "../users/user.repo.js";
-import { generateAccessToken, generateRefreshToken } from "../../utilities/jwt.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utilities/jwt.js";
 import type { User } from "../users/user.types.js";
 import userService from "../users/user.service.js";
 import { compare } from "bcryptjs";
-import type { UserRole } from "../../utilities/user-role.enum.js";
+import type { UserRole } from "../../utilities/enums.js";
 import { sendEmail } from "../../services/email.service.js";
 
 const generateOtp = async (email: string) => {
@@ -51,22 +54,18 @@ const verifyOTP = async (email: string, otp: string) => {
 
     await redis.del(`OTP:${email}`);
 
-    return authResponses.USER_VERIFIED_SUCCESSFULLY!!
-
+    return authResponses.USER_VERIFIED_SUCCESSFULLY!!;
   } catch (e) {
     console.log(e);
     throw e;
   }
 };
 
-
-
 const login = async (credentials: Pick<User, "email" | "password">) => {
   try {
     const user = await userService.find(credentials.email);
     if (!user) throw authResponses.INVALID_CREDENTIALS;
-    
-    
+
     const isPasswordValid = await compare(credentials.password, user.password);
     if (!isPasswordValid) throw authResponses.INVALID_CREDENTIALS;
     console.log("inside login");
@@ -76,25 +75,23 @@ const login = async (credentials: Pick<User, "email" | "password">) => {
       email: user.email,
       role: user.role as UserRole,
     };
-    
+
     const accessToken = generateAccessToken(payload.id, payload.role);
     const refreshToken = generateRefreshToken(payload.id);
 
     const { password, ...userWithoutPassword } = user.toJSON();
     console.log("USER LOGGED IN");
 
-    return {userWithoutPassword, accessToken, refreshToken };
-
-    
+    return { userWithoutPassword, accessToken, refreshToken };
   } catch (error) {
     console.log(error);
-    
+
     throw error;
   }
 };
 
-export default{
-    generateOtp,
-    verifyOTP,
-    login
-}
+export default {
+  generateOtp,
+  verifyOTP,
+  login,
+};

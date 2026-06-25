@@ -1,17 +1,26 @@
+import type { Transaction } from "sequelize";
 import taskRepo from "./task.repo.js";
 import { TaskResponse } from "./task.response.js";
 import type { Task } from "./task.types.js";
 
-const create = async (data: Omit<Task, "id" | "status">, createdBy: string) => {
+const add = async (task: Omit<Task, "id">, transaction: Transaction) =>
+  await taskRepo.add(task, transaction);
+
+const create = async (
+  data: Omit<Task, "id" | "status">,
+  createdBy?: string,
+) => {
   try {
-    await taskRepo.add({
-      ...data,
-      status: "PENDING",
-      dueDate: new Date(),
-      completedAt: null,
-      createdBy,
-      updatedBy: createdBy,
-    });
+    await taskRepo.add(
+      {
+        ...data,
+        status: "PENDING",
+        dueDate: new Date(),
+        completedAt: null,
+        createdBy,
+        updatedBy: createdBy,
+      }
+    );
     return TaskResponse.TASK_CREATED;
   } catch (error) {
     throw error;
@@ -96,6 +105,7 @@ const remove = async (id: string) => {
 };
 
 export default {
+  add,
   create,
   findById,
   findByJourneyId,

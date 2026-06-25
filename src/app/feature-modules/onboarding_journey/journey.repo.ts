@@ -1,8 +1,9 @@
+import type { Transaction } from "sequelize";
 import { OnboardingJourneys } from "./journey.schema.js";
 import type { OnboardingJourney } from "./journey.types.js";
 
-const add = (journey: Omit<OnboardingJourney, "id">) =>
-  OnboardingJourneys.create(journey);
+const add = (journey: Omit<OnboardingJourney, "id">, transaction?: Transaction) =>
+  OnboardingJourneys.create(journey, transaction ? {transaction}: {});
 
 const findById = (id: string) =>
   OnboardingJourneys.findOne({ where: { id } });

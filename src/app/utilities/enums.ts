@@ -1,0 +1,20 @@
+export enum UserRole {
+  HR = "HR",
+  MANAGER = "MANAGER",
+  JOINEE = "JOINEE",
+}
+
+
+export enum Tasktype {
+  DOCUMENT_UPLOAD = "DOCUMENT_UPLOAD",
+  FORM = "FORM",
+  REQUEST = "REQUEST",
+  ACKNOWLEDGEMENT = "ACKNOWLEDGEMENT"
+}
+
+export enum TaskStatus {
+   PENDING = "PENDING", 
+   IN_PROGRESS = "IN_PROGRESS", 
+   COMPLETED = "COMPLETED",
+  REJECTED = "REJECTED"
+}

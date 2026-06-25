@@ -1,18 +1,18 @@
 import fs from "fs";
 import jwt from "jsonwebtoken";
-import type { UserRole } from "./user-role.enum.js";
+import type { UserRole } from "./enums.js";
 
 const privateKey = fs.readFileSync("private.key", "utf-8");
 const publicKey = fs.readFileSync("public.key", "utf-8");
 
 export type JwtPayloadType = {
   userId: string;
-  role: UserRole
+  role: UserRole;
 };
 
 export const generateAccessToken = (
   userId: string,
-  role: JwtPayloadType["role"]
+  role: JwtPayloadType["role"],
 ) => {
   return jwt.sign(
     {
@@ -23,7 +23,7 @@ export const generateAccessToken = (
     {
       algorithm: "RS256",
       expiresIn: "1d",
-    }
+    },
   );
 };
 
@@ -36,7 +36,7 @@ export const generateRefreshToken = (userId: string) => {
     {
       algorithm: "RS256",
       expiresIn: "7d",
-    }
+    },
   );
 };
 

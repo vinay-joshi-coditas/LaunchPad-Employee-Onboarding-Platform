@@ -9,10 +9,10 @@ import { authorize } from "../../utilities/authorize.middleware.js";
 
 const router = Router();
 
-router.post("/add", authenticate, body(ZUserCreate), authorize("HR"), async(req, res, next) => {
+router.post("/add", body(ZUserCreate), authorize("HR"), async(req, res, next) => {
     try {
         const user = req.user;
-        req.body.createdBy = user?.id
+        req.body.createdBy = user?.id 
         req.body.updatedBy = user?.id
 
         const result = userService.add(req.body);

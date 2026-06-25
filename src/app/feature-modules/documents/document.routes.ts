@@ -31,4 +31,17 @@ router.post("/upload", authenticate, upload.single("fileName"), body(ZDocumentUp
   },
 );
 
+
+router.get("/get-url",async(req,res,next)=>{
+    try{
+        const key = req.body.s3Key;
+        const url = await documentService.getURL(key);
+        if(!url)res.send(new ResponseHandler("url not found "))
+        res.send(new ResponseHandler(url));
+
+    }catch(e){
+        next(e)
+    }
+})
+
 export default new Route("/document", router);

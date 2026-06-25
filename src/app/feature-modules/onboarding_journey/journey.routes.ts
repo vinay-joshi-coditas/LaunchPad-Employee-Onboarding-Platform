@@ -4,22 +4,37 @@ import { authorize } from "../../utilities/authorize.middleware.js";
 import { body } from "../../utilities/validate.js";
 import { ResponseHandler } from "../../utilities/response-handler.js";
 import { Route } from "../../routes/routes.types.js";
-import { ZOnboardingJourneyCreate, ZOnboardingJourneyUpdate } from "./journey.types.js";
+import {
+  ZOnboardingJourneyCreate,
+  ZOnboardingJourneyUpdate,
+} from "./journey.types.js";
 import journeyService from "./journey.service.js";
-
 
 const router = Router();
 
-router.post( "/create", authenticate, body(ZOnboardingJourneyCreate), authorize("HR"), async (req, res, next) => {
+router.post(
+  "/create",
+  authenticate,
+  body(ZOnboardingJourneyCreate),
+  authorize("HR"),
+  async (req, res, next) => {
     try {
       const createdBy = req.user!.id;
-      console.log("inside journey---------------");
-      
-      const result = await journeyService.create(req.body.newHireId, createdBy);
+      console.log("inside journey---------------", req.body);
+
+      const { title, description, taskType } = req.body;
+
+      const result = await journeyService.create(
+        req.body.newHireId,
+        createdBy,
+        title,
+        description,
+        taskType,
+      );
       res.status(201).send(new ResponseHandler(result));
     } catch (error) {
-        console.log(error);
-        
+      console.log(error);
+
       next(error);
     }
   },

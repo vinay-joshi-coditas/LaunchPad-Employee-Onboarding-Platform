@@ -1,8 +1,11 @@
 import type { Document } from "./document.types.js";
 
-import { uploadFile } from "../../services/s3.service.js";
+import { s3Client, uploadFile } from "../../services/s3.service.js";
 import { DocumentResponse } from "./document.response.js";
 import documentRepo from "./document.repo.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { env } from "../../../validate-env.js";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // data: Pick<Document, "taskId" | "fileName" | "mimeType" | "fileSize"
 
@@ -39,7 +42,23 @@ const upload = async (data: Omit<Document, "id">, uploadedBy: string, file?: Exp
   }
 };
 
+const getURL = async(key:string)=>{
+    try{
+        const command = new GetObjectCommand({
+            Bucket: env.S3_BUCKET_NAME,
+            Key: key
+        });
+
+        return await getSignedUrl(s3Client,command,{expiresIn:3600});
+
+
+    }catch(e){
+        throw(e);
+    }
+}
+
 
 export default {
-    upload
+    upload,
+    getURL
 }
