@@ -13,57 +13,52 @@ export default {
      */
 
     await queryInterface.createTable("onboarding_journey", {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.fn("gen_random_uuid"),
-        primaryKey: true,
-        allowNull: false,
-      },
-      newHireId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "users",
-          key: "id"
-        }
-      },
-      status: {
-        type: DataTypes.ENUM("Pending", "InProgress", "Completed"),
-        allowNull: true
-      },
-      startDate: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: true
-      },
-      completedAt:{
-        type: DataTypes.DATE,
-        allowNull: true
-      },
-      progress_percentage: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-      },
-      createdAt: {
-        allowNull: true,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-      },
-      updatedAt: {
-        allowNull: true,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-      },
-      createdBy: {
-        allowNull: true,
-        type: DataTypes.UUID,
-        references: { model: "users", key: "id" },
-      },
-      updatedBy: {
-        allowNull: true,
-        type: DataTypes.UUID,
-        references: { model: "users", key: "id" },
-      },
+       id: {
+            type: DataTypes.UUID,
+            defaultValue: Sequelize.fn("gen_random_uuid"),
+            primaryKey: true,
+            allowNull: false,
+          },
+          newHireId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: { model: "users", key: "id" },
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
+          },
+          status: {
+            type: DataTypes.ENUM("Pending", "InProgress", "Completed"),
+            allowNull: false,
+          },
+          startDate: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
+          completedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: null,
+          },
+          createdAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW,
+          },
+          updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW,
+          },
+          createdBy: {
+            type: DataTypes.UUID,
+            allowNull: true,
+            references: { model: "users", key: "id" },
+          },
+          updatedBy: {
+            type: DataTypes.UUID,
+            allowNull: true,
+            references: { model: "users", key: "id" },
+          },
     });
   },
 
