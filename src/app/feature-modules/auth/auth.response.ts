@@ -5,7 +5,8 @@ export const authResponses: Record<
   | "INVALID_OTP"
   | "USER_CREATED"
   | "OTP_SENT"
-  | "USER_VERIFIED_SUCCESSFULLY",
+  | "USER_VERIFIED_SUCCESSFULLY"
+  | "ACCESS_DENIED",
   { statusCode: number; message: string }
 > = {
   USER_NOT_FOUND: {
@@ -35,5 +36,9 @@ export const authResponses: Record<
   USER_VERIFIED_SUCCESSFULLY: {
     statusCode: 200,
     message: "USER VERIFIED SUCCESSFULLY"
+  },
+  ACCESS_DENIED: {
+    statusCode: 403,
+    message: "Access denied"
   }
 };

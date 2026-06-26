@@ -2,6 +2,11 @@ import type { Transaction } from "sequelize";
 import taskRepo from "./task.repo.js";
 import { TaskResponse } from "./task.response.js";
 import type { Task } from "./task.types.js";
+import journeyRepo from "../onboarding_journey/journey.repo.js";
+import { getIO } from "../../connections/ws.connection.js";
+import { RealtimeEvents } from "../../realTime/realtime.events.js";
+import { Rooms } from "../../realTime/realtime.rooms.js";
+
 
 const add = async (task: Omit<Task, "id">, transaction: Transaction) =>
   await taskRepo.add(task, transaction);
@@ -11,16 +16,14 @@ const create = async (
   createdBy?: string,
 ) => {
   try {
-    await taskRepo.add(
-      {
-        ...data,
-        status: "PENDING",
-        dueDate: new Date(),
-        completedAt: null,
-        createdBy,
-        updatedBy: createdBy,
-      }
-    );
+    await taskRepo.add({
+      ...data,
+      status: "PENDING",
+      dueDate: new Date(),
+      completedAt: null,
+      createdBy,
+      updatedBy: createdBy,
+    });
     return TaskResponse.TASK_CREATED;
   } catch (error) {
     throw error;
@@ -72,6 +75,7 @@ const updateStatus = async (
     const task = await taskRepo.findById(id);
     if (!task) throw TaskResponse.TASK_NOT_FOUND;
 
+    
     const patch: Partial<Task> = { status, updatedBy };
 
     if (status === "COMPLETED") {
@@ -86,8 +90,30 @@ const updateStatus = async (
     }
 
     await taskRepo.update(id, patch);
+
+    const journey = await journeyRepo.findById(task.journeyId);
+
+    if (journey) {
+      const io = getIO();
+
+      const payload = {
+        taskId: id,
+        journeyId: task.journeyId,
+        newHireId: journey.newHireId,
+        status,
+        updatedAt: new Date(),
+      };
+      io.to(Rooms.hr()).emit(RealtimeEvents.TASK_STATUS_UPDATED, payload);
+
+      io.to(Rooms.user(journey.newHireId)).emit(
+        RealtimeEvents.TASK_STATUS_UPDATED,
+        payload,
+      );
+    }
     return TaskResponse.TASK_UPDATED;
   } catch (error) {
+    console.log(error);
+    
     throw error;
   }
 };

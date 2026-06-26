@@ -4,7 +4,8 @@ export class Route{
     private static registeredRoutes: string[] = [];
     constructor(
         public path: string,
-        public router: Router
+        public router: Router,
+        public isPublic: boolean = false
     ){
         if(!this.path.startsWith("/")) throw (`${path} should start with a /`);
         if(Route.registeredRoutes.includes(this.path)) throw (`${path} already exists`);

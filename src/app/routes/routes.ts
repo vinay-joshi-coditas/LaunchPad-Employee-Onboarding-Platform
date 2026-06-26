@@ -9,6 +9,7 @@ import helmet from "helmet";
 import { routes } from "./routes.data.js";
 import { ResponseHandler } from "../utilities/response-handler.js";
 import cookieParser from "cookie-parser";
+import { authenticate } from "../feature-modules/auth/auth.middleware.js";
 
 export const registeredMiddlewares = (app: Application) => {
   app.use(helmet());
@@ -16,7 +17,12 @@ export const registeredMiddlewares = (app: Application) => {
   app.use(cookieParser());
 
   for (const route of routes) {
-    app.use(route.path, route.router);
+    if(route.isPublic){
+      app.use(route.path, route.router);
+    }else{
+      app.use(route.path, authenticate, route.router);
+    }
+
     // console.log(route.path, route.router)
   }
   app.use((err: any, req: Request, res: Response, next: NextFunction) => {

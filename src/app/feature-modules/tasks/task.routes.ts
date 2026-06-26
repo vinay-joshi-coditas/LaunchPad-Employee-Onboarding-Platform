@@ -71,15 +71,17 @@ router.patch(
   },
 );
 
-router.patch("/:id/status", authenticate, body(ZTaskStatusUpdate), async (req, res, next) => {
+router.patch("/:id/status", body(ZTaskStatusUpdate), async (req, res, next) => {
   try {
-    const { status } = req.body;
+    const status = req.body.status as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "REJECTED";
     const updatedBy = req.user!.id;
 
     // Only HR/Manager can reject tasks
     if (status === "REJECTED" && req.user!.role === "Joinee") {
       return res.status(403).send(new ResponseHandler({ message: "Joinees cannot reject tasks" }));
     }
+
+    const loggedInUserId = req.user?.id;
 
     const result = await taskService.updateStatus(req.params.id as string, status, updatedBy);
     res.send(new ResponseHandler(result));

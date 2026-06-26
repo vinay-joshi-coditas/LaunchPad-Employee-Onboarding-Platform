@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import type { UserRole } from "./enums.js";
 
 const privateKey = fs.readFileSync("private.key", "utf-8");
-const publicKey = fs.readFileSync("public.key", "utf-8");
+export const publicKey = fs.readFileSync("public.key", "utf-8");
 
 export type JwtPayloadType = {
   userId: string;

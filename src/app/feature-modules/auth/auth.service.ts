@@ -71,13 +71,13 @@ const login = async (credentials: Pick<User, "email" | "password">) => {
     console.log("inside login");
 
     const payload = {
-      id: user.id,
+      userId: user.id,
       email: user.email,
       role: user.role as UserRole,
     };
 
-    const accessToken = generateAccessToken(payload.id, payload.role);
-    const refreshToken = generateRefreshToken(payload.id);
+    const accessToken = generateAccessToken(payload.userId, payload.role);
+    const refreshToken = generateRefreshToken(payload.userId);
 
     const { password, ...userWithoutPassword } = user.toJSON();
     console.log("USER LOGGED IN");

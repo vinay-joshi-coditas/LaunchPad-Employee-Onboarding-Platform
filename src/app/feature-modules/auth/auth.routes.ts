@@ -55,4 +55,4 @@ router.post("/login", body(ZUserLogin), async (req, res, next) => {
 });
 
 
-export default new Route("/auth", router);
+export default new Route("/auth", router, true);
