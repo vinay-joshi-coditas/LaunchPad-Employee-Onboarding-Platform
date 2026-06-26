@@ -18,3 +18,9 @@ export enum TaskStatus {
    COMPLETED = "COMPLETED",
   REJECTED = "REJECTED"
 }
+
+export enum DocumentStatus {
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  PENDING = "PENDING"
+ }

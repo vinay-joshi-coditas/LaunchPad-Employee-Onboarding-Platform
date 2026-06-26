@@ -3,7 +3,8 @@ export const DocumentResponse: Record<
   | "DOCUMENT_APPROVED"
   | "DOCUMENT_REJECTED"
   | "DOCUMENT_NOT_FOUND"
-  | "DOCUMENT_DELETED",
+  | "DOCUMENT_DELETED"
+  | "DOCUMENT_ALREADY_REVIEWED",
   { statusCode: number; message: string }
 > = {
   DOCUMENT_UPLOADED: {
@@ -26,4 +27,8 @@ export const DocumentResponse: Record<
     statusCode: 200,
     message: "Document deleted successfully",
   },
+   DOCUMENT_ALREADY_REVIEWED: {
+    statusCode: 400,
+    message: "This document has already been reviewed and cannot be reviewed again",
+  }
 };

@@ -24,4 +24,9 @@ export const ZDocumentUpload = z.object({
 });
 
 
+export const ZDocumentReview = z.object({
+  status: z.enum(["APPROVED", "REJECTED"]),
+  rejectionReason: z.string().min(1).max(2000).optional(),
+})
+
 export type Document = z.infer<typeof ZDocument>;

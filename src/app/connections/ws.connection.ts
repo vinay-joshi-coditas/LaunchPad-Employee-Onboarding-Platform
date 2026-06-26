@@ -28,6 +28,7 @@ export const initWS = (httpServer: HttpServer): Server => {
     console.log('registering socket')
     
     io.use((socket, next) => {
+      try {
         console.log("+++++++++++++++");
         const token =
         (socket.handshake.auth?.token as string) ??
@@ -37,7 +38,6 @@ export const initWS = (httpServer: HttpServer): Server => {
             return next(new Error("Authentication token missing"));
         }
         
-        try {
             const payload = jwt.verify(token, publicKey) as JWTPayload;
             
             (socket as AuthenticatedSocket).user = payload;

@@ -6,6 +6,9 @@ import documentRepo from "./document.repo.js";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "../../../validate-env.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { authenticate } from "../auth/auth.middleware.js";
+import { authorize } from "../../utilities/authorize.middleware.js";
+import { DocumentStatus } from "../../utilities/enums.js";
 
 // data: Pick<Document, "taskId" | "fileName" | "mimeType" | "fileSize"
 
@@ -57,8 +60,58 @@ const getURL = async(key:string)=>{
     }
 }
 
+const findByTaskId = async (taskId: string) => {
+  try {
+    return await documentRepo.findByTaskId(taskId);
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+const findByUploadedBy = async (uploadedBy: string) => {
+  try {
+    return await documentRepo.findByUploadedBy(uploadedBy);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const findAll = () => documentRepo.findAll();
+
+
+const review = async (
+  id: string,
+  status: DocumentStatus,
+  reviewedBy: string,
+  rejectionReason?: string,
+) => {
+  try {
+    const doc = await documentRepo.findById(id);
+    if (!doc) throw DocumentResponse.DOCUMENT_NOT_FOUND;
+
+    if (doc.status !== DocumentStatus.PENDING) throw DocumentResponse.DOCUMENT_ALREADY_REVIEWED;
+
+    await documentRepo.update(id, {
+      status,
+      reviewedBy,
+      reviewedAt: new Date(),
+      rejectionReason: status === DocumentStatus.REJECTED ? (rejectionReason ?? null) : null,
+      updatedBy: reviewedBy,
+    });
+
+    return status === DocumentStatus.APPROVED ? DocumentResponse.DOCUMENT_APPROVED : DocumentResponse.DOCUMENT_REJECTED;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export default {
     upload,
-    getURL
+    getURL,
+    findAll,
+    findByTaskId,
+    findByUploadedBy,
+    review
 }
